@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, ScrollView, ActivityIndicator, Linking } from 'react-native';
 import { Link } from './Link';
 import { NewLink } from './NewLink';
 import { LinksStorage } from './LinksStorage';
@@ -7,11 +7,36 @@ import { LinksStorage } from './LinksStorage';
 export default class App extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-      isLoading: true
-    }
+    this.state = this.getComponentState();
     this.links = [];
     this.loadLinks();
+  }
+
+  getComponentState = (state) => {
+      if(!this.state){
+          oldState = {
+              isLoading: false,
+              url: null
+          };
+      } else {
+          oldState = this.state;
+      }
+      state = state || {};
+      newState = {
+        isLoading: state.isLoading !== undefined? state.isLoading : oldState.isLoading,
+          url: state.url !== undefined? state.url : oldState.url
+      }
+      return newState;
+  }
+
+  componentDidMount = () => {
+      Linking.getInitialURL().then((url) => {
+          if(url){
+              this.setState(this.getComponentState({
+                  url: url
+              }));
+          }
+      }).catch(err => console.log('error'));
   }
 
   loadLinks = () => {
@@ -21,17 +46,16 @@ export default class App extends React.Component {
     // });
     linksStorage.getLinks((links) => {
       this.links = links;
-      this.setState({
+      this.setState(this.getComponentState({
         isLoading: false
-      });
+      }));
     });
   }
 
   setLoadingState = () => {
-    console.log('true');
-    this.setState({
+    this.setState(this.getComponentState({
       isLoading: true
-    });
+    }));
   }
 
   refresh = () => {
@@ -56,7 +80,7 @@ export default class App extends React.Component {
               return <Link url={ link } key={ i }></Link>
             })
           }
-          <NewLink refresh={ this.refresh }></NewLink>
+          <NewLink refresh={ this.refresh } text={ this.state.url }></NewLink>
         </ScrollView>
       );
     }

@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import { TextInput, Text, View, StyleSheet, Button } from 'react-native';
 import { LinksStorage } from './LinksStorage';
+import { Notification } from './Notification';
 
 
 export class NewLink extends Component {
   constructor(props){
     super(props);
     this.state = {
-      'newlink': ''
+      'newlink': props.text || ''
     }
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+      if(this.state.newlink !== nextProps.text){
+          this.setState({
+              'newlink': nextProps.text
+          });
+      }
   }
 
   onChangeText = (text) => {
@@ -24,11 +33,16 @@ export class NewLink extends Component {
     });
   }
 
+  notify = () => {
+      Notification.notification();
+  }
+
   render() {
     return (
       <View style={ styles.container }>
-        <TextInput onChangeText={ this.onChangeText } />
+        <TextInput onChangeText={ this.onChangeText } value={ this.state.newlink }/>
         <Button title="Submit" color="#841584" onPress={ this.onSubmit }/>
+        <Button title="Notify" color="#783433" onPress={ this.notify }/>
       </View>
     )
   }
