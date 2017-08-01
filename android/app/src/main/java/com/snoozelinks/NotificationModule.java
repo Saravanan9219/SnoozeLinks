@@ -30,7 +30,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         return "Notification";
     }
 
-    private void setAlarm(){
+    private void setAlarm(int year, int month, int date, int hourOfDay, int minute){
         AlarmManager alarmManager = (AlarmManager) getCurrentActivity().getSystemService(Context.ALARM_SERVICE);
 
         Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
@@ -39,13 +39,13 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         PendingIntent broadcast = PendingIntent.getBroadcast(getCurrentActivity(), 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 60);
+        cal.set(year, month, date, hourOfDay, minute);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
     }
 
     @ReactMethod
-    public void notification(){
-        setAlarm();
+    public void notification(int year, int month, int date, int hourOfDay, int minute){
+        setAlarm(year, month, date, hourOfDay, minute);
         // Intent notificationIntent = new Intent(getCurrentActivity(), MainActivity.class);
 
         // TaskStackBuilder stackBuilder = TaskStackBuilder.create(getCurrentActivity());

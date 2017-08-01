@@ -1,13 +1,5 @@
 import { AsyncStorage } from 'react-native';
 
-var links = [
-    'https://google.co.in',
-    'https://amazon.in',
-    'https://github.com',
-    'https://facebook.com',
-    'https://reddit.com'
-];
-
 
 export class LinksStorage {
     getLinks = (callback) => {
@@ -54,7 +46,8 @@ export class LinksStorage {
         this.getLinks((links) => {
             links.push(link);
             this.setLinks(links, (err, result) => {
-                callback(err, result);
+                if(callback)
+                    callback(err, result);
             });
         });
     }

@@ -6,6 +6,7 @@ import {
     View,
     Linking
 } from 'react-native';
+import { LinkModel, LinkException } from '../models/LinkModel';
 
 export class Link extends Component {
     constructor() {
@@ -14,17 +15,19 @@ export class Link extends Component {
     }
 
     _openUrl() {
-        Linking.canOpenURL(this.props.url).then(supported => {
+        Linking.canOpenURL(this.props.url.url).then(supported => {
             if(supported){
-                Linking.openURL(this.props.url);
+                Linking.openURL(this.props.url.url);
             }
         });
     }
 
     render() {
+        console.log(this.props);
         return (
             <View style={ styles.link }>
-              <Text style={ styles.text } onPress={ this.openUrl }>{ this.props.url }</Text>
+              <Text style={ styles.text } onPress={ this.openUrl }>{ this.props.url.url }</Text>
+              <Text style={ styles.text } onPress={ this.openUrl }>{ this.props.url.date }</Text>
             </View>
         )
     }
@@ -33,7 +36,7 @@ export class Link extends Component {
 const styles = StyleSheet.create({
     link: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'baseline',
         marginLeft: 10,
         marginRight: 10,
